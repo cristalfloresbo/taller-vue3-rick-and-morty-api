@@ -12,7 +12,14 @@
             Personajes
           </span>
         </h1>
-        <button class="button is-success is-rounded" @click="fetchCharacters">Consultar</button>
+        <div class="field has-addons is-pulled-right">
+          <div class="control">
+            <input type="text" class="input is-rounded" @keyup.enter="searchData" v-model="search">
+          </div>
+          <div class="control">
+            <button class="button is-success is-rounded" @click="searchData">Buscar</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="container">
@@ -20,13 +27,13 @@
         <AppCharacter v-for="character in characters" :key="character.id" :character="character" />
       </div>
       <nav class="pagination" role="navigacion" aria-label="pagination">
-        <a  class="pagination-previous" @click="changePage(page - 1)">Anterior</a>
+        <a class="pagination-previous" @click="changePage(page - 1)">Anterior</a>
         <ul class="pagination-list">
           <li>
             <a class="pagination-link is-current">{{ page }}</a>
           </li>
         </ul>
-        <a  class="pagination-next" @click="changePage(page + 1)">Siguiente</a>
+        <a class="pagination-next" @click="changePage(page + 1)">Siguiente</a>
       </nav>
     </div>
   </div>
@@ -47,7 +54,8 @@ export default {
     return {
       characters: [],
       page: 1,
-      pages: 1
+      pages: 1,
+      search: ''
     }
   },
   created() {
@@ -56,7 +64,8 @@ export default {
   methods: {
     async fetchCharacters() {
       const params = {
-        page: this.page
+        page: this.page,
+        name: this.search
       }
       let response = await getCharacters(params);
       this.characters = response.results
@@ -64,6 +73,10 @@ export default {
     },
     changePage(page) {
       this.page = (page <= 0 || page > this.pages) ? this.page : page;
+      this.fetchCharacters()
+    },
+    searchData() {
+      this.pages = 1
       this.fetchCharacters()
     }
   },
