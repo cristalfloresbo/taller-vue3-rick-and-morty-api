@@ -19,6 +19,15 @@
       <div class="columns is-desktop is-mobile is-tablet is-multiline is-centered">
         <AppCharacter v-for="character in characters" :key="character.id" :character="character" />
       </div>
+      <nav class="pagination" role="navigacion" aria-label="pagination">
+        <a  class="pagination-previous" @click="changePage(page - 1)">Anterior</a>
+        <ul class="pagination-list">
+          <li>
+            <a class="pagination-link is-current">{{ page }}</a>
+          </li>
+        </ul>
+        <a  class="pagination-next" @click="changePage(page + 1)">Siguiente</a>
+      </nav>
     </div>
   </div>
 </template>
@@ -36,7 +45,9 @@ export default {
   },
   data() {
     return {
-      characters: []
+      characters: [],
+      page: 1,
+      pages: 1
     }
   },
   created() {
@@ -44,8 +55,16 @@ export default {
   },
   methods: {
     async fetchCharacters() {
-      let results = await getCharacters();
-      this.characters = results
+      const params = {
+        page: this.page
+      }
+      let response = await getCharacters(params);
+      this.characters = response.results
+      this.pages = response.info.pages
+    },
+    changePage(page) {
+      this.page = (page <= 0 || page > this.pages) ? this.page : page;
+      this.fetchCharacters()
     }
   },
 }

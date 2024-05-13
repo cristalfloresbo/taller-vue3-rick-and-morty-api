@@ -1,18 +1,19 @@
 import axios from "axios";
 
-const urlCharacter = `${process.env.VUE_APP_URL_API}/character`
+const urlCharacter = `${process.env.VUE_APP_URL_API}/character`;
 
-export const getCharacters = () => {
-    return axios.get(urlCharacter)
-    .then(res => {
-        console.log(res.data);
-        return res.data.results;
+export const getCharacters = (params) => {
+  return axios
+    .get(urlCharacter, { params })
+    .then((res) => {
+      console.log(res.data);
+      return res.data;
     })
-    .catch(err => {
-        console.log(err);
-    })
-}
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 export default {
-    getCharacters
-}
+  getCharacters,
+};
