@@ -14,6 +14,19 @@ export const getCharacters = (params) => {
     });
 };
 
+export const getOneCharacter = (id) => {
+  return axios
+    .get(`${urlCharacter}/${id}`)
+    .then((res) => {
+      console.log(res.data);
+      return res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 export default {
   getCharacters,
+  getOneCharacter,
 };

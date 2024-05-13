@@ -1,7 +1,5 @@
 <template>
   <div data-theme="light">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App" />
     <div class="hero is-white is-gradient is-bold">
       <div class="hero-body">
         <h1 class="title">
@@ -21,33 +19,56 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="container">
-      <div class="columns is-desktop is-mobile is-tablet is-multiline is-centered">
-        <AppCharacter v-for="character in characters" :key="character.id" :character="character" />
+      <div class="container">
+        <div class="columns is-desktop is-mobile is-tablet is-multiline is-centered">
+          <AppCharacter @showModal="showModal" v-for="character in characters" :key="character.id"
+            :character="character" />
+        </div>
+        <nav class="pagination" role="navigacion" aria-label="pagination">
+          <a class="pagination-previous" @click="changePage(page - 1)">Anterior</a>
+          <ul class="pagination-list">
+            <li>
+              <a class="pagination-link is-current">{{ page }}</a>
+            </li>
+          </ul>
+          <a class="pagination-next" @click="changePage(page + 1)">Siguiente</a>
+        </nav>
       </div>
-      <nav class="pagination" role="navigacion" aria-label="pagination">
-        <a class="pagination-previous" @click="changePage(page - 1)">Anterior</a>
-        <ul class="pagination-list">
-          <li>
-            <a class="pagination-link is-current">{{ page }}</a>
-          </li>
-        </ul>
-        <a class="pagination-next" @click="changePage(page + 1)">Siguiente</a>
-      </nav>
+      <div class="modal" :class="{ 'is-active': modal }" v-show="modal">
+        <div class="modal-background" @click="modal = false">
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title">
+                Acerca de: {{ currentCharacter.name }}
+              </p>
+            </header>
+            <div class="modal-card-body">
+              <label class="label">Gender:</label>
+              <p>{{ currentCharacter.gender }}</p>
+              <label class="label">Estatus</label>
+              <p class="label">{{ currentCharacter.status }}</p>
+              <label class="label">Especie</label>
+              <p>{{ currentCharacter.species }}</p>
+              <label class="label">Tipo</label>
+              <p>{{ currentCharacter.type }}</p>
+            </div>
+            <footer class="modal-card-foot">
+              <button class="button" @click="modal = false">Cerrar</button>
+            </footer>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-import { getCharacters } from './services/Character.service.js'
+import { getCharacters, getOneCharacter } from './services/Character.service.js'
 import AppCharacter from './components/AppCharacter'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld,
     AppCharacter
   },
   data() {
@@ -55,7 +76,9 @@ export default {
       characters: [],
       page: 1,
       pages: 1,
-      search: ''
+      search: '',
+      modal: false,
+      currentCharacter: {}
     }
   },
   created() {
@@ -78,6 +101,15 @@ export default {
     searchData() {
       this.pages = 1
       this.fetchCharacters()
+    },
+    async showModal(id) {
+      this.fetchOneCharacter(id)
+      this.modal = true
+    },
+    async fetchOneCharacter(id) {
+      let response = await getOneCharacter(id);
+      this.currentCharacter = response;
+      console.log(this.currentCharacter);
     }
   },
 }

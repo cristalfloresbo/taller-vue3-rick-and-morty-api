@@ -8,7 +8,7 @@
                 <h3 class="title is-size-4">
                     {{ character.name }}
                 </h3>
-                <button class="button is-success is-rounded is-small">
+                <button class="button is-success is-rounded is-small" @click="showMore(character.id)">
                     Ver mas
                 </button>
             </div>
@@ -17,7 +17,12 @@
 </template>
 <script>
 export default {
-    props: ['character']
+    props: ['character'],
+    methods: {
+        showMore(id) {
+            this.$emit('showModal', id);
+        }
+    }
 }
 </script>
 <style lang="css"></style>
